@@ -2,7 +2,7 @@ var Myo = require('myo');
 var myMyo = Myo.create();
 var tmpY = 0;
 var tmpZ = 0;
-var tmp = 0;
+var tmp = -1;
 
 myMyo.on('connected', function () {
 	myMyo.setLockingPolicy('none');
@@ -10,15 +10,16 @@ myMyo.on('connected', function () {
 
 myMyo.on('orientation', function(data){
 
-	console.log(tmp, data.y);
-
 	if (tmp > 0)
+	{
 		console.log(tmp);
-	else if (tmp == 0)
+	}
+	else if (tmp == -1)
 	{
 		tmpZ = data.z;
 		tmpY = data.y;
 	}
+
 	if (data.y < (tmpY - 0.20))
 		tmp = 6;
 	else if (data.y > (tmpY + 0.20))
@@ -34,8 +35,8 @@ myMyo.on('pose', function(pose_name, edge){
 
 	if(pose_name == 'double_tap' && edge)
 	{
-		console.log('0');
-		tmp = 0;
+		console.log('-1');
+		tmp = -1;
 	}
 	else if(pose_name == 'fist' && edge)
 	{
