@@ -3,6 +3,7 @@ var myMyo = Myo.create();
 var tmpY = 0;
 var tmpZ = 0;
 var tmp = -1;
+var fw = 0;
 
 myMyo.on('connected', function () {
 	myMyo.setLockingPolicy('none');
@@ -15,33 +16,38 @@ myMyo.on('orientation', function(data){
 		console.log(tmp);
 	}
 	else if (tmp == -1)
-	{
-		tmpZ = data.z;
 		tmpY = data.y;
-	}
 
 	if (data.y < (tmpY - 0.20))
-		tmp = 6;
+	{
+		if (fw == 0)
+			tmp = 6;
+		if (fw == 1)
+			tmp = 3;
+	}
 	else if (data.y > (tmpY + 0.20))
-		tmp = 5;
-
-	if (data.z < (tmpZ - 0.20))
-		tmp = 4;
-	else if (data.z > (tmpZ + 0.20))
-		tmp = 3;
+	{
+		if (fw == 0)
+			tmp = 5;
+		if (fw == 1)
+			tmp = 4;
+	}
 });
 
 myMyo.on('pose', function(pose_name, edge){
 
 	if(pose_name == 'double_tap' && edge)
 	{
-		console.log('-1');
+		if (fw == 1)
+			fw = 0;
+		else
+			fw = 1;
 		tmp = -1;
 	}
 	else if(pose_name == 'fist' && edge)
 	{
-		tmp = 8;
-		console.log("8");
+		tmp = 7;
+		console.log("7");
 	}
 	else if(pose_name == 'wave_out' && edge)
 	{
@@ -54,9 +60,6 @@ myMyo.on('pose', function(pose_name, edge){
 		tmp = 1;
 		console.log('1');
 	}
-	else if(pose_name == 'fingers_spread' && edge)
-	{
-		tmp = 7;
-		console.log('7');
-	}
+	else
+		tmp = 0;
 });
